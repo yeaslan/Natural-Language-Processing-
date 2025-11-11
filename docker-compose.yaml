@@ -1,0 +1,39 @@
+version: "3.9"
+services:
+  api:
+    build: ./apps/api
+    environment:
+      - CONFIG_PATH=/app/configs/config.yaml
+    ports:
+      - "8000:8000"
+    depends_on:
+      - neo4j
+      - postgres
+      - opensearch
+  neo4j:
+    image: neo4j:5
+    environment:
+      - NEO4J_AUTH=neo4j/password
+    ports:
+      - "7687:7687"
+      - "7474:7474"
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=starmind
+      - POSTGRES_PASSWORD=starmind
+      - POSTGRES_DB=starmind
+    ports:
+      - "5432:5432"
+  opensearch:
+    image: opensearchproject/opensearch:2
+    environment:
+      - discovery.type=single-node
+      - plugins.security.disabled=true
+    ports:
+      - "9200:9200"
+      - "9600:9600"
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
